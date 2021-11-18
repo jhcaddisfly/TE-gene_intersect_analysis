@@ -1,4 +1,4 @@
-TE-gene intersect analysis
+# TE-gene intersect analysis
 
 These scripts are used as part of a pipeline to analyzed repeat dynamics of BUSCO genes, especially, to quantify shifts in associations between TEs and genic regions across lineages with varying repeat abundance. 
 
