@@ -6,6 +6,8 @@ The pipeline is described in detail in: Genome size evolution in the diverse ins
 Jacqueline Heckenhauer, Paul B. Frandsen, John S. Sproul, Zheng Li, Juraj Paule, Amanda M. Larracuente, Peter J. Maughan, Michael S. Barker, Julio V. Schneider, Russell J. Stewart, Steffen U. Pauls
 doi: https://doi.org/10.1101/2021.05.10.443368
 
+An ecxample for running the pipeline is given in ``` intersect_analysis_commands.txt ```
+
 ``` re_classify_gff_denovo.py ``` 
 
 This script takes the consensi.fa.classified output from repeatmodeler and the gff from RepeatMasker and populates a new gff with the annotations from the consensi.classified.fa file.
