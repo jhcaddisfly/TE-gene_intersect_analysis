@@ -6,7 +6,7 @@ The pipeline is described in detail in: Genome size evolution in the diverse ins
 Jacqueline Heckenhauer, Paul B. Frandsen, John S. Sproul, Zheng Li, Juraj Paule, Amanda M. Larracuente, Peter J. Maughan, Michael S. Barker, Julio V. Schneider, Russell J. Stewart, Steffen U. Pauls
 doi: https://doi.org/10.1101/2021.05.10.443368
 
-An ecxample for running the pipeline is given in ``` intersect_analysis_commands.txt ```
+An example for running the pipeline is given in ``` intersect_analysis_commands.txt ```
 
 ``` re_classify_gff_denovo.py ``` 
 
@@ -30,4 +30,20 @@ This script reorders the converted blast output.
 
 This script merges output of two repeatmasker runs. Parse the output tables from each of the two RM runs with this script.
 *This script was written by John S. Sproul.*
+
+***Input data***
+
+Custom made libraries from Repeatmodeler
+Files: *consensi.fa.classified: Custom repeat libraries generated from  
+          RepeatModeler2 for each respective assembly
+
+Repeatmasker_hints
+Files: *gff3: Repeatmasker hints after first round of Repeatmasker
+
+Repeatmasker_hints_species_arthropoda_hard
+Files: *gff3: Repeatmasker hints after first round of Repeatmasker
+
+BLAST
+Files: *out: Blast results
+
 
