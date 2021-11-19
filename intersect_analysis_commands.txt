@@ -1,0 +1,59 @@
+##Intersect analysis
+We reclassified the repeats in the gff3 files with custom scripts, 
+concatenated the two RepeatMasker runs of each species and sorted the resulting file using bedtools.
+We used custom scripts to parse BLAST output, collapse hits with overlapping coordinates and extract 
+coordinates of filtered hits. For each unique BLAST hit, we then asked whether it mapped to masked or 
+unmasked coordinates in the assembly by cross-referencing the coordinates of BLAST hits against a gff 
+file containing RepeatMasker annotations using  the ‘intersect’ function in BEDTools. 
+We also used custom scripts to calculate the total number of bases in filtered BLAST after subtracting 
+the number of bases at the locus belonging to all ‘complete’ BUSCO genes, and to categorize BUSCO repeats 
+based on their annotation status and repeat classification. We plotted the number of BUSCO repeats belonging 
+to repetitive element categories (i.e., classes and subclasses) alongside plots of the relative genomic abundance 
+of each respective category.
+
+Commands used in intersect analyses:
+# Convert blast output to bed, sort and merge
+$ for i in *out; do cat $i | awk '{print($2"\t"$9"\t"$10)}' > `basename $i	_vs_softmasked.out`.bed; done
+$ for i in *_busco_repeats.bed; do python reorder_blast_bed_sense.py $i `basename $i .bed`_reordered.bed; done
+$ for i in *reordered.bed; do bedtools sort -i $i > `basename $i .bed`_sorted.bed; done
+$ for i in *sorted.bed; do bedtools merge -i $i -c 4,5,6 -o distinct -s > `basename $i .bed`_merged.bed; done
+
+# Reclassify the repeats with the two python scripts that I wrote:
+# For each specimen, use the hints from repeatmasker after 2nd round on the hardmasked assembly with -species arthropod)
+$ python re_classify_gff_arthropod.py <*.fasta.masked.hard.out.gff3 >
+# For each specimen, use the custom made library for each assembly from Repeatmodeler and the hints from Repeatmasker after round 1)
+$ python re_classify_gff_denovo.py <*.consensi.fa.classified> <*_repeatmasker.gff3>
+
+# Concatenate the two resulting output files of each specimen
+$ cat <*.masked.hard.out.gff3_renamed.gff> <*_repeatmasker.gff3_renamed.gff3>  > <*_all_repeats.gff3>
+
+# Sort the resulting files of each specimen using bedtools
+$ bedtools sort -i <*_all_repeats.gff3> > <*_all_repeats_sorted.gff3>
+
+# Convert the repeatmasker gff3 to bed
+for i in *all_repeats_sorted.gff3; do gff2bed < $i > `basename $i .gff3`.bed; done
+for i in *sorted.bed; do bedtools sort -i $i > `basename $i .bed`_sorted.bed; done
+
+# Perform the intersect
+$ for i in *all_repeats_sorted_sorted.bed; do bedtools intersect -a $i -b `basename $i all_repeats_sorted_sorted.bed`busco_repeats_reordered_sorted_merged.bed -s > `basename $i all_repeats_sorted_sorted.bed`intersect.bed; done
+
+# Classifications counts
+$ for i in *intersect.bed; do cat $i | cut -d$'\t' -f8 | sort | uniq -c > `basename $i _intersect.bed`_intersect_counts.txt; done
+$ for i in *all_repeats_sorted_sorted.bed; do cat $i | cut -d$'\t' -f8 | sort | uniq -c > `basename $i all_repeats_sorted_sorted.bed`_repeatmasker_counts.txt; done
+
+# Take the counts.txt files into Excel and estimated the proportion of total counts for each category 
+# Count proportion of busco bps that are classified as repeats
+# Create merged repeatmasker and intersect bed files
+$ for i in *all_repeats_sorted_sorted.bed; do bedtools merge -i $i -c 6,7,8 -o distinct,count,distinct -s > `basename $i .bed`_merged.bed; done
+$ for i in *intersect.bed; do bedtools sort -i $i > `basename $i .bed`_sorted.bed; done
+$ for i in *intersect_sorted.bed; do bedtools merge -i $i -c 6,7,8 -o distinct,count,distinct -s > `basename $i .bed`_merged.bed; done
+
+# count and compare the number of bps in the merged repeatmasker bed file and the merged busco_repeat bed file
+# count the num bps in repeatmasker all
+# count the num bps in busco 
+$ awk -F'\t' 'BEGIN{SUM=0}{ SUM+=$3-$2-1 }END{print SUM}' LB1_all_repeats_sorted_sorted_merged.bed
+$ awk -F'\t' 'BEGIN{SUM=0}{ SUM+=$3-$2-1 }END{print SUM}' LB1_intersect_sorted_merged.bed
+
+# count the num bps in busco blast all 
+$ awk -F'\t' 'BEGIN{SUM=0}{ SUM+=$3-$2-1 }END{print SUM}' LB1_busco_repeats_reordered_sorted_merged.bed
+
