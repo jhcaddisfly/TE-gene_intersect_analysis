@@ -38,6 +38,9 @@ This script merges output of two repeatmasker runs. Parse the output tables from
 Files: *consensi.fa.classified: Custom repeat libraries generated from RepeatModeler2 for each respective assembly
 We identified and classified repetitive elements in the genome assemblies of each species using RepeatModeler2.0 [Flynn et al., 2020]
 
+```Species	Abbreviation in cutom-made repeatmodeler libraries```
+Species	Abbreviation in cutom-made repeatmodeler libraries
+
 ```Repeatmasker_hints.zip```
 Files: *gff3: Repeatmasker hints after first round of Repeatmasker
 We annotated repeats in the contamination filtered assemblies with RepeatMasker 4.1.0 (http://www.repeatmasker.org) using the custom repeat libraries generated from RepeatModeler2 for each respective assembly with the search engine set to “ncbi” and using the -xsmall option. We used the perl script rmOutToGFF3.pl from RepeatMasker to convert the Repeatmasker OUT files from each Repeatmasker run to version 3 to gff files containing the RepeatMasker hints. 
